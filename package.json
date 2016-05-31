@@ -8,5 +8,9 @@
     "start": "node server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express-myconnection": "^1.0.4",
+    "mysql": "^2.10.2"
+  }
 }
