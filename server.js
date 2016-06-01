@@ -25,8 +25,9 @@ var server = net.createServer(function(socket) {
   var resposta = "";
   socket.on('data', function(data) {
     	resposta += data.toString();
-    	if(resposta.length == 60 ){
-    		console.log(resposta.toString().trim());
+    	if(resposta.length < 60 ){
+
+        //console.log(resposta.toString().trim());
 
         //Pega todos os dados da resposta da catraca
         var str = resposta.toString().trim();
@@ -36,23 +37,38 @@ var server = net.createServer(function(socket) {
         var sentido = str.substring(31, 32);
         var leitora = str.substring(33, 34);
         var cartaoSupervisor = str.substring(34, 49);
+        var dataHora = moment(dataAcesso + ' ' + hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
 
-        //Formata data e hora
-        var dataHora = moment(data + ' ' + hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
+        //Verifica se o cartão está desbloqueado
+        var queryBlock = "SELECT situacao FROM tbl_cartao WHERE abaTrack = '"+abaTrack+"'";
+        connection.query(queryBlock, function(err, rows, fields) {
+          if (!err){
+            if(rows[0].situacao != 'I'){
+              socket.write("!OK Bem vindo      A000000.......*");
+              var query = "INSERT INTO tbl_acessocatraca (abaTrack, sentido, catraca, dataHora ) VALUES ('"+abaTrack+"', '"+sentido+"', '4', '"+dataHora+"')";
+              connection.query(query, function(err, rows, fields) {
+                if (!err){
+                  //console.log('Inserido no BD');
+                }
+                else {
+                  //console.log('Erro ao inserir.');
+                }
+              });
+            }else{
+              socket.write("!NN Bloqueado      A000000.......*");
+            }
+          }
+          else{
+            console.log('Erro ao consultar.');
 
-        connection.connect();
-        connection.query("INSERT INTO tbl_acessocatraca (abaTrack, sentido, catraca, dataHora ) VALUES ('"+abaTrack+"', '"+sentido+"', '4', '"+dataHora+"')", function(err, rows, fields) {
-          if (!err)
-            console.log('Inserido no BD');
-          else
-            console.log('Erro ao inserir.');
+          }
         });
-        connection.end();
     		resposta = "";
     	}
 
     	//socket.write("OK---ENTRADA OK---E000000");
-      socket.write("!OK Bem vindo      A000000.......*");
+      //socket.write("!OK Bem vindo      A000000.......*");
+      //socket.write("!NN Bloqueado      A000000.......*");
 
   });
 
