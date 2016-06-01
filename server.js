@@ -1,75 +1,58 @@
 var net = require('net');
 var StringDecoder = require('string_decoder').StringDecoder;
 var decoder = new StringDecoder('utf8');
-var mysql = require('mysql');
-var moment = require('moment');
-
-var connection = mysql.createConnection({
-  host     : '10.5.70.129',
-  user     : 'root',
-  password : 'grk1957',
-  database : 'cap'
-});
+var NetKeepAlive = require('net-keepalive');
+var Catraca = require('./catraca');
 
 var server = net.createServer(function(socket) {
 
   console.log('CONECTADO: ' + socket.remoteAddress +':'+ socket.remotePort);
 
-  //socket.write("XP");
-	//socket.pipe(socket);
+  /*
+  * Configurações do Socket
+  *
+  **/
+  socket.setNoDelay(true);
+  var habilitar = true;                           // habilita SO_KEEPALIVE
+  var duracaoInicial = 1000;                      // começa a sondar após 1 segundo de inatividade
+  socket.setKeepAlive(habilitar, duracaoInicial); // seta SO_KEEPALIVE e TCP_KEEPIDLE
 
+  var intervaloSonda = 1000;  // após duracaoInicial envia sondas a cada 1 segundo
+  NetKeepAlive.setKeepAliveInterval(socket, intervaloSonda); // seta TCP_KEEPINTVL
+
+  var maxSondasAntesDrop = 10; // Depois de 10 tentativas a conexão será dropada
+  NetKeepAlive.setKeepAliveProbes(socket, maxSondasAntesDrop); // seta TCP_KEEPCNT
+
+  /*
+  * Tratamento de Erro do Socket
+  *
+  **/
   socket.on('error', function(err) {
     console.log(err);
   });
 
+
+  /*
+  * Tratar respostas da catraca
+  *
+  **/
   var resposta = "";
   socket.on('data', function(data) {
     	resposta += data.toString();
-    	if(resposta.length < 60 ){
-
-        //console.log(resposta.toString().trim());
-
-        //Pega todos os dados da resposta da catraca
-        var str = resposta.toString().trim();
-        var abaTrack = str.substring(1, 15);
-        var dataAcesso = str.substring(15, 23);
-        var hora = str.substring(23, 31);
-        var sentido = str.substring(31, 32);
-        var leitora = str.substring(33, 34);
-        var cartaoSupervisor = str.substring(34, 49);
-        var dataHora = moment(dataAcesso + ' ' + hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
-
-        //Verifica se o cartão está desbloqueado
-        var queryBlock = "SELECT situacao FROM tbl_cartao WHERE abaTrack = '"+abaTrack+"'";
-        connection.query(queryBlock, function(err, rows, fields) {
-          if (!err){
-            if(rows[0].situacao != 'I'){
-              socket.write("!OK Bem vindo      A000000.......*");
-              var query = "INSERT INTO tbl_acessocatraca (abaTrack, sentido, catraca, dataHora ) VALUES ('"+abaTrack+"', '"+sentido+"', '4', '"+dataHora+"')";
-              connection.query(query, function(err, rows, fields) {
-                if (!err){
-                  //console.log('Inserido no BD');
-                }
-                else {
-                  //console.log('Erro ao inserir.');
-                }
-              });
-            }else{
-              socket.write("!NN Bloqueado      A000000.......*");
-            }
-          }
-          else{
-            console.log('Erro ao consultar.');
-
+    	if(resposta.length == 60 ){
+        Catraca.montaResposta60(resposta);
+        Catraca.cartaoDesbloqueado(Catraca.infoAcesso.abaTrack, function(resultado){
+          if(resultado === true){
+            socket.write("!OK Bem vindo      A000000.......*");
+            Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado){
+              Catraca.limpaInfoAcesso();
+            });
           }
         });
-    		resposta = "";
+    	}else if (resposta.length == 58) {
+
     	}
-
-    	//socket.write("OK---ENTRADA OK---E000000");
-      //socket.write("!OK Bem vindo      A000000.......*");
-      //socket.write("!NN Bloqueado      A000000.......*");
-
+      resposta = "";
   });
 
   socket.on('end', function() {
@@ -78,4 +61,4 @@ var server = net.createServer(function(socket) {
 
 });
 
-server.listen(5000, '10.5.68.250');
+server.listen(5000, '10.5.69.59');
