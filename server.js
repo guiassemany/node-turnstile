@@ -51,7 +51,8 @@ var server = net.createServer(function(socket) {
     		resposta = "";
     	}
 
-    	socket.write("OK---ENTRADA OK---E000000");
+    	//socket.write("OK---ENTRADA OK---E000000");
+      socket.write("!OK Bem vindo      A000000.......*");
 
   });
 
