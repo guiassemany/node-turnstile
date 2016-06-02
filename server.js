@@ -1,12 +1,17 @@
+require('dotenv').config();
 var net = require('net');
 var StringDecoder = require('string_decoder').StringDecoder;
 var decoder = new StringDecoder('utf8');
 var NetKeepAlive = require('net-keepalive');
 var Catraca = require('./catraca');
 
+var catracas = [];
+
 var server = net.createServer(function(socket) {
 
   console.log('CONECTADO: ' + socket.remoteAddress +':'+ socket.remotePort);
+  socket.name = socket.remoteAddress + ':' + socket.remotePort;
+  catracas.push(socket);
 
   /*
   * Configurações do Socket
@@ -57,8 +62,9 @@ var server = net.createServer(function(socket) {
 
   socket.on('end', function() {
     console.log('DESCONECTADO: ' + socket.remoteAddress +':'+ socket.remotePort);
+    catracas.splice(catracas.indexOf(socket), 1);
   });
 
 });
 
-server.listen(5000, '10.5.69.59');
+server.listen(process.env.PORT, process.env.IP);
