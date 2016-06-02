@@ -13,6 +13,7 @@
     "dotenv": "^2.0.0",
     "moment": "^2.13.0",
     "mysql": "^2.10.2",
+    "mysql-queues": "^1.0.0",
     "net-keepalive": "^0.3.4"
   }
 }
