@@ -42,8 +42,9 @@ Catraca.prototype.cartaoDesbloqueado = function(abaTrack, callback){
     if (!err){
       if(rows[0].situacao == 'I'){
         callback(false);
+      }else{
+        callback(true);
       }
-      callback(true);
     }else{
       callback('Error ao Consultar');
     }

@@ -5,13 +5,9 @@ var decoder = new StringDecoder('utf8');
 var NetKeepAlive = require('net-keepalive');
 var Catraca = require('./catraca');
 
-var catracas = [];
-
 var server = net.createServer(function(socket) {
 
   console.log('CONECTADO: ' + socket.remoteAddress +':'+ socket.remotePort);
-  socket.name = socket.remoteAddress + ':' + socket.remotePort;
-  catracas.push(socket);
 
   /*
   * Configurações do Socket
@@ -46,25 +42,28 @@ var server = net.createServer(function(socket) {
     	resposta += data.toString();
     	if(resposta.length == 60 ){
         Catraca.montaResposta60(resposta);
-        Catraca.cartaoDesbloqueado(Catraca.infoAcesso.abaTrack, function(resultado){
-          if(resultado === true){
+        Catraca.cartaoDesbloqueado(Catraca.infoAcesso.abaTrack, function(resultadoBloqueio){
+          if(resultadoBloqueio === true){
             socket.write("!OK Bem vindo      A000000.......*");
             Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado){
               Catraca.limpaInfoAcesso();
             });
+          }else{
+            socket.write("!NN Bloqueado      A000000.......*");
           }
         });
+        resposta = "";
     	}else if (resposta.length == 58) {
-
+        resposta = "";
     	}
-      resposta = "";
   });
 
   socket.on('end', function() {
     console.log('DESCONECTADO: ' + socket.remoteAddress +':'+ socket.remotePort);
-    catracas.splice(catracas.indexOf(socket), 1);
   });
 
 });
 
-server.listen(process.env.PORT, process.env.IP);
+server.listen(process.env.PORT, process.env.IP, function(){
+  console.log('Servidor Online');
+});
