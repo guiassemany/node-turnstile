@@ -42,7 +42,7 @@ var server = net.createServer(function(socket) {
     	resposta += data.toString();
     	if(resposta.length == 60 ){
         console.log(resposta);
-        Catraca.montaResposta60(resposta);
+        Catraca.montaResposta60(resposta.replace(/\0/g, ''));
         console.log(Catraca.infoAcesso);
         Catraca.verificaCartao(Catraca.infoAcesso.abaTrack, function(statusCartao){
           if(statusCartao.bloqueado === true){
@@ -59,7 +59,7 @@ var server = net.createServer(function(socket) {
         resposta = "";
     	}else if (resposta.length == 58) {
         console.log(resposta);
-        Catraca.montaResposta58(resposta);
+        Catraca.montaResposta58(resposta.replace(/\0/g, ''));
         console.log(Catraca.infoAcesso);
         Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado){
           Catraca.limpaInfoAcesso();

@@ -38,7 +38,7 @@ Catraca.prototype.montaResposta60 = function(resposta){
 
 Catraca.prototype.montaResposta58 = function(resposta){
   var str = resposta.toString().trim();
-  this.infoAcesso.abaTrack          = str.substring(0, 13);
+  this.infoAcesso.abaTrack          = "0" + str.substring(0, 13);
   this.infoAcesso.dataAcesso        = str.substring(13, 21);
   this.infoAcesso.hora              = str.substring(21, 29);
   this.infoAcesso.sentido           = str.substring(29, 30);
