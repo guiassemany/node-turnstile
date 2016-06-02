@@ -41,19 +41,29 @@ var server = net.createServer(function(socket) {
   socket.on('data', function(data) {
     	resposta += data.toString();
     	if(resposta.length == 60 ){
+        console.log(resposta);
         Catraca.montaResposta60(resposta);
-        Catraca.cartaoDesbloqueado(Catraca.infoAcesso.abaTrack, function(resultadoBloqueio){
-          if(resultadoBloqueio === true){
-            socket.write("!OK Bem vindo      A000000.......*");
-            Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado){
-              Catraca.limpaInfoAcesso();
-            });
-          }else{
+        console.log(Catraca.infoAcesso);
+        Catraca.verificaCartao(Catraca.infoAcesso.abaTrack, function(statusCartao){
+          if(statusCartao.bloqueado === true){
             socket.write("!NN Bloqueado      A000000.......*");
+          }else{
+            if(statusCartao.funcionario === true){
+              socket.write("!OK Bem vindo      A000000.......*");
+            }else{
+              socket.write("!OK Bem vindo      E000000.......*");
+            }
+            Catraca.limpaInfoAcesso();
           }
         });
         resposta = "";
     	}else if (resposta.length == 58) {
+        console.log(resposta);
+        Catraca.montaResposta58(resposta);
+        console.log(Catraca.infoAcesso);
+        Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado){
+          Catraca.limpaInfoAcesso();
+        });
         resposta = "";
     	}
   });
