@@ -4,6 +4,7 @@ var StringDecoder = require('string_decoder').StringDecoder;
 var decoder = new StringDecoder('utf8');
 var NetKeepAlive = require('net-keepalive');
 var Catraca = require('./catraca');
+var cliente = require('./cliente');
 
 var server = net.createServer(function(socket) {
 
@@ -69,6 +70,7 @@ var server = net.createServer(function(socket) {
         console.log(resposta);
         Catraca.montaResposta58(resposta.replace(/\0/g, ''));
         console.log(Catraca.infoAcesso);
+        cliente.emit('nova-movimentacao', {infoAcesso: Catraca.infoAcesso});
         Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado){
           Catraca.limpaInfoAcesso();
         });
