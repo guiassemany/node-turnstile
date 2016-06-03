@@ -19,3 +19,11 @@
 * KeepAlive: socket.setKeepAlive(true, 1000);
 * Trim para capturar resposta corretamente: resposta.toString().trim();
 * Destruir o client: client.destroy();
+
+#### Comandos Servidor
+* forever start server.js
+* forever -o out.log -e err.log server.js
+* tail -f /root/.forever/arquivo.log
+* forever list
+* forever restart server.js
+* forever stop server.js
