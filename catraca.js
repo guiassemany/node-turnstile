@@ -20,7 +20,7 @@ Catraca.prototype.infoAcesso = {
   dataAcesso: null,
   hora: null,
   sentido: null,
-  leitora: null,
+  leitor: null,
   cartaoSupervisor: null,
   dataHora: null,
 };
@@ -31,7 +31,7 @@ Catraca.prototype.montaResposta60 = function(resposta){
   this.infoAcesso.dataAcesso        = str.substring(15, 23);
   this.infoAcesso.hora              = str.substring(23, 31);
   this.infoAcesso.sentido           = str.substring(31, 32);
-  this.infoAcesso.leitora           = str.substring(32, 33);
+  this.infoAcesso.leitor            = str.substring(32, 33);
   this.infoAcesso.cartaoSupervisor  = str.substring(33, 49);
   this.infoAcesso.dataHora          = moment(this.infoAcesso.dataAcesso + ' ' + this.infoAcesso.hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
 }
@@ -42,7 +42,7 @@ Catraca.prototype.montaResposta58 = function(resposta){
   this.infoAcesso.dataAcesso        = str.substring(13, 21);
   this.infoAcesso.hora              = str.substring(21, 29);
   this.infoAcesso.sentido           = str.substring(29, 30);
-  this.infoAcesso.leitora           = str.substring(30, 31);
+  this.infoAcesso.leitor            = str.substring(30, 31);
   this.infoAcesso.cartaoSupervisor  = str.substring(31, 47);
   this.infoAcesso.dataHora          = moment(this.infoAcesso.dataAcesso + ' ' + this.infoAcesso.hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
 }
@@ -93,7 +93,7 @@ Catraca.prototype.limpaInfoAcesso = function(){
     dataAcesso: null,
     hora: null,
     sentido: null,
-    leitora: null,
+    leitor: null,
     cartaoSupervisor: null,
     dataHora: null,
   };

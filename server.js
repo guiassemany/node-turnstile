@@ -51,7 +51,11 @@ var server = net.createServer(function(socket) {
             if(statusCartao.funcionario === true){
               socket.write("!OK Bem vindo      A000000.......*");
             }else{
-              socket.write("!OK Bem vindo      E000000.......*");
+              if(Catraca.infoAcesso.leitor == "1"){
+                  socket.write("!OK Bem vindo      E000000.......*");
+              }else{
+                  socket.write("!OK Bem vindo      S000000.......*");
+              }
             }
             Catraca.limpaInfoAcesso();
           }
