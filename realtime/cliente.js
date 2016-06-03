@@ -2,7 +2,7 @@
 * Client to socket.io
 *
 */
-var cliente = require('socket.io-client')('http://10.5.69.45:5001');
+var cliente = require('socket.io-client')('http://'+process.env.IP+':'+process.env.WS_PORT);
 
  cliente.on('connect', function(){
    console.log('Conectado');

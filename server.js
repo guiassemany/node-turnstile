@@ -4,7 +4,7 @@ var StringDecoder = require('string_decoder').StringDecoder;
 var decoder = new StringDecoder('utf8');
 var NetKeepAlive = require('net-keepalive');
 var Catraca = require('./catraca');
-var cliente = require('./cliente');
+var cliente = require('./realtime/cliente');
 
 var server = net.createServer(function(socket) {
 
@@ -84,6 +84,7 @@ var server = net.createServer(function(socket) {
 
 });
 
-server.listen(process.env.PORT, process.env.IP, function(){
+server.listen(process.env.NS_PORT, process.env.IP, function(){
   console.log('Servidor Online');
+  cliente.emit('confirma-conexao', 'Conectado');
 });
