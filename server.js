@@ -49,7 +49,11 @@ var server = net.createServer(function(socket) {
             socket.write("!NN Bloqueado      A000000.......*");
           }else{
             if(statusCartao.funcionario === true){
-              socket.write("!OK Bem vindo      A000000.......*");
+              if(Catraca.infoAcesso.leitor == "1"){
+                  socket.write("!OK Bem vindo      A000000.......*");
+              }else{
+                  socket.write("!NN Bloqueado      A000000.......*");
+              }
             }else{
               if(Catraca.infoAcesso.leitor == "1"){
                   socket.write("!OK Bem vindo      E000000.......*");
