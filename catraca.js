@@ -81,6 +81,7 @@ Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback){
       callback(true);
     }
     else {
+      console.log(err);
       console.log('Erro ao inserir.');
       callback(false);
     }
