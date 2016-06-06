@@ -4,15 +4,15 @@ var net = require('net');
 var client = new net.Socket();
 
 client.connect(process.env.NS_PORT, process.env.IP, function() {
-	console.log('Conectado');
+  console.log('Conectado');
   client.write("048104004888702/06/1614:33:45E100000000000000S");
 });
 
 client.on('data', function(data) {
-	resposta = data.toString();
+  resposta = data.toString();
   console.log(resposta);
 });
 
 client.on('close', function() {
-	console.log('Conexão fechada');
+  console.log('Conexão fechada');
 });
