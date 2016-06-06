@@ -4,7 +4,7 @@ var StringDecoder = require('string_decoder').StringDecoder;
 var decoder = new StringDecoder('utf8');
 var NetKeepAlive = require('net-keepalive');
 var Catraca = require('./catraca');
-var cliente = require('./realtime/cliente');
+//var cliente = require('./realtime/cliente');
 
 var server = net.createServer(function(socket) {
 
@@ -70,7 +70,7 @@ var server = net.createServer(function(socket) {
         console.log(resposta);
         Catraca.montaResposta58(resposta.replace(/\0/g, ''));
         console.log(Catraca.infoAcesso);
-        cliente.emit('nova-movimentacao', {infoAcesso: Catraca.infoAcesso});
+        //cliente.emit('nova-movimentacao', {infoAcesso: Catraca.infoAcesso});
         Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado){
           Catraca.limpaInfoAcesso();
         });
@@ -86,5 +86,5 @@ var server = net.createServer(function(socket) {
 
 server.listen(process.env.NS_PORT, process.env.IP, function(){
   console.log('Servidor Online');
-  cliente.emit('confirma-conexao', 'Conectado');
+  //cliente.emit('confirma-conexao', 'Conectado');
 });
