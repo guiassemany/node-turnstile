@@ -49,15 +49,29 @@ var server = net.createServer(function(socket) {
           if(statusCartao.bloqueado === true){
             socket.write("!NN Bloqueado      A000000.......*");
           }else{
-            if(statusCartao.funcionario === true){
-              if(Catraca.infoAcesso.leitor == "1"){
-                  socket.write("!OK Bem vindo      A000000.......*");
-              }else{
+            if(statusCartao.funcionario === true){ // Funcionário
+              if(Catraca.infoAcesso.leitor == "1"){ // Se Funcionário colocar no coletor 1
+                Catraca.verificaUltimoAcesso(Catraca.infoAcesso.abaTrack, function(sentidoUltAcesso){
+                  if(sentidoUltAcesso == 'E'){ // Último acesso Entrada = Libera Saída
+                    socket.write("!OK Bem vindo      S000000.......*");
+                  }else if(sentidoUltAcesso == 'S'){ // Último acesso Saída = Libera entrada
+                    socket.write("!OK Bem vindo      E000000.......*");
+                  }else{ // Sem último acesso = Libera Ambos
+                    socket.write("!OK Bem vindo      A000000.......*");
+                  }
+                });
+              }else{ // Se Funcionário colocar no coletor 2 = Bloqueia
                   socket.write("!NN Bloqueado      A000000.......*");
               }
-            }else{
+            }else{ // Visitante
               if(Catraca.infoAcesso.leitor == "1"){
-                  socket.write("!OK Bem vindo      E000000.......*");
+                Catraca.verificaUltimoAcesso(Catraca.infoAcesso.abaTrack, function(sentidoUltAcesso){
+                  if(sentidoUltAcesso == 'E'){
+                      socket.write("!NN Bloqueado      A000000.......*");
+                  }else{
+                      socket.write("!OK Bem vindo      E000000.......*");
+                  }
+                });
               }else{
                   socket.write("!OK Bem vindo      S000000.......*");
               }

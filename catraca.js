@@ -74,16 +74,52 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback){
 }
 
 Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback){
-  var query = "INSERT INTO tbl_acessocatraca (abaTrack, sentido, catraca, dataHora ) VALUES (?, ?, ?, ?)";
-  connection.query(query,[infoAcesso.abaTrack, infoAcesso.sentido, '4', infoAcesso.dataHora],function(err, rows, fields) {
+  this.pegaDonoCartao(infoAcesso.abaTrack, function(codigoPessoa){
+    var query = "INSERT INTO tbl_acessocatraca (abaTrack, codigoPessoa, sentido, catraca, dataHora ) VALUES (?, ?, ?, ?, ?)";
+    connection.query(query,[infoAcesso.abaTrack, codigoPessoa, infoAcesso.sentido, '4', infoAcesso.dataHora],function(err, rows, fields) {
+      if (!err){
+        console.log('Inserido no BD');
+        callback(true);
+      }
+      else {
+        console.log(err);
+        console.log('Erro ao inserir.');
+        callback(false);
+      }
+    });
+  });
+}
+
+Catraca.prototype.pegaDonoCartao = function(abaTrack, callback){
+  var query = "SELECT codigoPessoa FROM tbl_pessoa pes INNER JOIN tbl_cartao car ON car.codigoCartao = pes.codigoCartao OR car.codigoCartao = pes.codigoCartaoOficial WHERE car.abaTrack = ?";
+  connection.query(query, abaTrack, function(err, rows, fields) {
     if (!err){
-      console.log('Inserido no BD');
-      callback(true);
+      if(typeof rows[0] !== 'undefined'){
+        callback(rows[0].codigoPessoa);
+      }else {
+        callback(null);
+      }
     }
     else {
       console.log(err);
-      console.log('Erro ao inserir.');
-      callback(false);
+      console.log('Erro ao consultar código da pessoa.');
+    }
+  });
+}
+
+Catraca.prototype.verificaUltimoAcesso = function(abaTrack, callback){
+  var query = "SELECT sentido FROM tbl_acessocatraca WHERE abaTrack = ? ORDER BY codigoAcessoCatraca DESC LIMIT 1";
+  connection.query(query, abaTrack, function(err, rows, fields) {
+    if (!err){
+      if(typeof rows[0] !== 'undefined'){
+        callback(rows[0].sentido);
+      }else {
+        callback(null);
+      }
+    }
+    else {
+      console.log(err);
+      console.log('Erro ao consultar código da pessoa.');
     }
   });
 }
