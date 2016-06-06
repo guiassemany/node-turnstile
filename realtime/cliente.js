@@ -1,3 +1,4 @@
+require('dotenv').config();
 /*
 * Client to socket.io
 *
@@ -14,6 +15,10 @@ var cliente = require('socket.io-client')('http://'+process.env.IP+':'+process.e
 
  cliente.on('disconnect', function(){
    console.log('Desconectado');
+ });
+
+ cliente.on('hello', function(data){
+   console.log(data);
  });
 
  module.exports = cliente;

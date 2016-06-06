@@ -4,7 +4,7 @@ var StringDecoder = require('string_decoder').StringDecoder;
 var decoder = new StringDecoder('utf8');
 var NetKeepAlive = require('net-keepalive');
 var Catraca = require('./catraca');
-//var cliente = require('./realtime/cliente');
+var RealTime = require('./realtime/server');
 
 var server = net.createServer(function(socket) {
 
