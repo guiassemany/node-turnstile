@@ -84,7 +84,7 @@ var server = net.createServer(function(socket) {
       console.log(resposta);
       Catraca.montaResposta58(resposta.replace(/\0/g, ''));
       console.log(Catraca.infoAcesso);
-      //cliente.emit('nova-movimentacao', {infoAcesso: Catraca.infoAcesso});
+      RealTime.sockets.emit('nova-movimentacao', {infoAcesso: Catraca.infoAcesso});
       Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado) {
         Catraca.limpaInfoAcesso();
       });
