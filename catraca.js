@@ -23,6 +23,8 @@ Catraca.prototype.infoAcesso = {
   leitor: null,
   cartaoSupervisor: null,
   dataHora: null,
+  nome: null,
+  foto: null,
 };
 
 Catraca.prototype.montaResposta60 = function(resposta) {
@@ -74,12 +76,12 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback) {
 }
 
 Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
-  this.pegaDonoCartao(infoAcesso.abaTrack, function(codigoPessoa) {
+  this.pegaDonoCartao(infoAcesso.abaTrack, function(codigoPessoa, nome, foto) {
     var query = "INSERT INTO tbl_acessocatraca (abaTrack, codigoPessoa, sentido, catraca, dataHora ) VALUES (?, ?, ?, ?, ?)";
     connection.query(query, [infoAcesso.abaTrack, codigoPessoa, infoAcesso.sentido, '4', infoAcesso.dataHora], function(err, rows, fields) {
       if (!err) {
         console.log('Inserido no BD');
-        callback(true);
+        callback(true, nome, foto);
       } else {
         console.log(err);
         console.log('Erro ao inserir.');
@@ -90,11 +92,11 @@ Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
 }
 
 Catraca.prototype.pegaDonoCartao = function(abaTrack, callback) {
-  var query = "SELECT codigoPessoa FROM tbl_pessoa pes INNER JOIN tbl_cartao car ON car.codigoCartao = pes.codigoCartao OR car.codigoCartao = pes.codigoCartaoOficial WHERE car.abaTrack = ?";
+  var query = "SELECT codigoPessoa, nome, foto FROM tbl_pessoa pes INNER JOIN tbl_cartao car ON car.codigoCartao = pes.codigoCartao OR car.codigoCartao = pes.codigoCartaoOficial WHERE car.abaTrack = ?";
   connection.query(query, abaTrack, function(err, rows, fields) {
     if (!err) {
       if (typeof rows[0] !== 'undefined') {
-        callback(rows[0].codigoPessoa);
+        callback(rows[0].codigoPessoa, rows[0].nome, rows[0].foto);
       } else {
         callback(null);
       }
@@ -130,6 +132,8 @@ Catraca.prototype.limpaInfoAcesso = function() {
     leitor: null,
     cartaoSupervisor: null,
     dataHora: null,
+    nome: null,
+    foto: null,
   };
 }
 

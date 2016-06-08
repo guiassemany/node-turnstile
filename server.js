@@ -6,9 +6,19 @@ var NetKeepAlive = require('net-keepalive');
 var Catraca = require('./catraca');
 var RealTime = require('./realtime/server');
 
+var catracasOnline = [];
+
+//WebSocket - Ao Conectar Emite as catracas online
+RealTime.on('connection', function(socket){
+  RealTime.sockets.emit('catracas-online', catracasOnline);
+});
+
+// TCP Socket
 var server = net.createServer(function(socket) {
 
   console.log('CONECTADO: ' + socket.remoteAddress + ':' + socket.remotePort);
+  catracasOnline.push(socket.remoteAddress);
+  RealTime.sockets.emit('catracas-online', catracasOnline);
 
   /*
    * Configurações do Socket
@@ -83,9 +93,11 @@ var server = net.createServer(function(socket) {
     } else if (resposta.length == 58) {
       console.log(resposta);
       Catraca.montaResposta58(resposta.replace(/\0/g, ''));
-      console.log(Catraca.infoAcesso);
-      RealTime.sockets.emit('nova-movimentacao', {infoAcesso: Catraca.infoAcesso});
-      Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado) {
+      Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado, nome, foto) {
+        Catraca.infoAcesso.nome = nome;
+        Catraca.infoAcesso.foto = foto;
+        console.log(Catraca.infoAcesso);
+        RealTime.sockets.emit('nova-movimentacao', {infoAcesso: Catraca.infoAcesso});
         Catraca.limpaInfoAcesso();
       });
       resposta = "";
@@ -94,11 +106,13 @@ var server = net.createServer(function(socket) {
 
   socket.on('end', function() {
     console.log('DESCONECTADO: ' + socket.remoteAddress + ':' + socket.remotePort);
+    var index = catracasOnline.indexOf(socket.remoteAddress);
+    catracasOnline.splice(index, 1);
+    RealTime.sockets.emit('catracas-online', catracasOnline);
   });
 
 });
 
 server.listen(process.env.NS_PORT, process.env.IP, function() {
   console.log('Servidor Online');
-  //cliente.emit('confirma-conexao', 'Conectado');
 });
