@@ -122,6 +122,15 @@ var server = net.createServer(function(socket) {
     RealTime.sockets.emit('catracas-online', catracasOnline);
   });
 
+  socket.on('error', function(err){
+    console.log('DESCONECTADO: ' + socket.remoteAddress + ':' + socket.remotePort);
+    var index = catracasOnline.indexOf(socket.remoteAddress);
+    if(index > -1){
+        catracasOnline.splice(index, 1);
+    }
+    RealTime.sockets.emit('catracas-online', catracasOnline);
+  });
+
 });
 
 server.listen(process.env.NS_PORT, process.env.IP, function() {
