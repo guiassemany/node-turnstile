@@ -58,7 +58,7 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback) {
   var query = "SELECT situacao, codigoTipoCartao FROM tbl_cartao WHERE abaTrack = ?";
   connection.query(query, abaTrack, function(err, rows, fields) {
     if (!err) {
-      if (rows[0].situacao == 'I') {
+      if (rows[0].situacao == 'I' || rows[0].situacao == 'E') {
         statusCartao.bloqueado = true;
       } else {
         statusCartao.bloqueado = false;
