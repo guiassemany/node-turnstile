@@ -17,7 +17,10 @@ RealTime.on('connection', function(socket){
 var server = net.createServer(function(socket) {
 
   console.log('CONECTADO: ' + socket.remoteAddress + ':' + socket.remotePort);
-  catracasOnline.push(socket.remoteAddress);
+  var indexCatraca = catracasOnline.indexOf(socket.remoteAddress);
+  if(indexCatraca == -1){
+      catracasOnline.push(socket.remoteAddress);
+  }
   RealTime.sockets.emit('catracas-online', catracasOnline);
 
   /*
@@ -113,7 +116,9 @@ var server = net.createServer(function(socket) {
   socket.on('end', function() {
     console.log('DESCONECTADO: ' + socket.remoteAddress + ':' + socket.remotePort);
     var index = catracasOnline.indexOf(socket.remoteAddress);
-    catracasOnline.splice(index, 1);
+    if(index > -1){
+        catracasOnline.splice(index, 1);
+    }
     RealTime.sockets.emit('catracas-online', catracasOnline);
   });
 
