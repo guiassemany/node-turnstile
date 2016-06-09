@@ -52,7 +52,8 @@ Catraca.prototype.montaResposta58 = function(resposta) {
 Catraca.prototype.verificaCartao = function(abaTrack, callback) {
   var statusCartao = {
     bloqueado: null,
-    funcionario: null
+    funcionario: null,
+    supervisor: null
   };
   var query = "SELECT situacao, codigoTipoCartao FROM tbl_cartao WHERE abaTrack = ?";
   connection.query(query, abaTrack, function(err, rows, fields) {
@@ -67,9 +68,15 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback) {
       } else {
         statusCartao.funcionario = false;
       }
+      if (rows[0].codigoTipoCartao == '3') {
+        statusCartao.supervisor = true;
+      } else {
+        statusCartao.supervisor = false;
+      }
     } else {
       statusCartao.bloqueado = null;
       statusCartao.funcionario = null;
+      statusCartao.supervisor = null;
     }
     callback(statusCartao);
   });
@@ -92,7 +99,7 @@ Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
 }
 
 Catraca.prototype.pegaDonoCartao = function(abaTrack, callback) {
-  var query = "SELECT codigoPessoa, nome, foto FROM tbl_pessoa pes INNER JOIN tbl_cartao car ON car.codigoCartao = pes.codigoCartao OR car.codigoCartao = pes.codigoCartaoOficial WHERE car.abaTrack = ?";
+  var query = "SELECT codigoPessoa, nome, foto FROM tbl_pessoa pes INNER JOIN tbl_cartao car ON car.codigoCartao = pes.codigoCartao OR car.codigoCartao = pes.codigoCartaoOficial OR car.codigoCartao = pes.codigoCartaoSupervisor WHERE car.abaTrack = ?";
   connection.query(query, abaTrack, function(err, rows, fields) {
     if (!err) {
       if (typeof rows[0] !== 'undefined') {

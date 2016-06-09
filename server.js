@@ -58,6 +58,12 @@ var server = net.createServer(function(socket) {
       Catraca.verificaCartao(Catraca.infoAcesso.abaTrack, function(statusCartao) {
         if (statusCartao.bloqueado === true) {
           socket.write("!NN Bloqueado      A000000.......*");
+        } else if (statusCartao.supervisor === true && statusCartao.bloqueado === false) {
+          if (Catraca.infoAcesso.leitor == "1") { // Se Funcionário colocar no coletor 1
+            socket.write("!OK Bem vindo      A000000.......*");
+          } else { // Se Funcionário colocar no coletor 2 = Bloqueia
+            socket.write("!NN Bloqueado      A000000.......*");
+          }
         } else {
           if (statusCartao.funcionario === true) { // Funcionário
             if (Catraca.infoAcesso.leitor == "1") { // Se Funcionário colocar no coletor 1
