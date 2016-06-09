@@ -60,7 +60,7 @@ var server = net.createServer(function(socket) {
           socket.write("!NN Bloqueado      A000000.......*");
         } else if (statusCartao.supervisor === true && statusCartao.bloqueado === false) {
           if (Catraca.infoAcesso.leitor == "1") { // Se Funcionário colocar no coletor 1
-            socket.write("!OK Bem vindo      A000000.......*");
+            socket.write("!OK Supervisor     A000000.......*");
           } else { // Se Funcionário colocar no coletor 2 = Bloqueia
             socket.write("!NN Bloqueado      A000000.......*");
           }
