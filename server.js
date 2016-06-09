@@ -123,12 +123,7 @@ var server = net.createServer(function(socket) {
   });
 
   socket.on('error', function(err){
-    console.log('DESCONECTADO: ' + socket.remoteAddress + ':' + socket.remotePort);
-    var index = catracasOnline.indexOf(socket.remoteAddress);
-    if(index > -1){
-        catracasOnline.splice(index, 1);
-    }
-    RealTime.sockets.emit('catracas-online', catracasOnline);
+    console.log("Socket error");
   });
 
 });
