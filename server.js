@@ -69,7 +69,7 @@ var server = net.createServer(function(socket) {
             if (Catraca.infoAcesso.leitor == "1") { // Se Funcionário colocar no coletor 1
               Catraca.verificaUltimoAcesso(Catraca.infoAcesso.abaTrack, function(sentidoUltAcesso) {
                 if (sentidoUltAcesso == 'E') { // Último acesso Entrada = Libera Saída
-                  socket.write("!OK Até logo!      S000000.......*");
+                  socket.write("!OK Ate logo!      S000000.......*");
                 } else if (sentidoUltAcesso == 'S') { // Último acesso Saída = Libera entrada
                   socket.write("!OK Bem vindo      E000000.......*");
                 } else { // Sem último acesso = Libera Ambos
@@ -89,7 +89,7 @@ var server = net.createServer(function(socket) {
                 }
               });
             } else {
-              socket.write("!OK Até logo!      S000000.......*");
+              socket.write("!OK Ate logo!      S000000.......*");
             }
           }
           Catraca.limpaInfoAcesso();
