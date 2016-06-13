@@ -59,9 +59,10 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback) {
     var statusCartao = {
         bloqueado: null,
         funcionario: null,
-        supervisor: null
+        supervisor: null,
+        sentidoUltAcesso: null,
     };
-    var query = "SELECT situacao, codigoTipoCartao FROM tbl_cartao WHERE abaTrack = ?";
+    var query = "SELECT situacao, codigoTipoCartao, sentido FROM tbl_cartao WHERE abaTrack = ?";
     connection.query(query, abaTrack, function(err, rows, fields) {
         if (!err) {
             if (rows[0].situacao == 'I' || rows[0].situacao == 'E') {
@@ -78,6 +79,13 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback) {
                 statusCartao.supervisor = true;
             } else {
                 statusCartao.supervisor = false;
+            }
+            if (rows[0].sentido == "E") {
+                statusCartao.sentidoUltAcesso = "E";
+            } else if (rows[0].sentido == "S") {
+                statusCartao.sentidoUltAcesso = "S";
+            } else {
+                statusCartao.sentidoUltAcesso = "N";
             }
         } else {
             statusCartao.bloqueado = null;
