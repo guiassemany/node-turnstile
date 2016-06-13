@@ -62,14 +62,14 @@ var server = net.createServer(function(socket) {
         if (statusCartao.bloqueado === true) {
           socket.write("!NN Bloqueado      A000000.......*");
         } else if (statusCartao.supervisor === true && statusCartao.bloqueado === false) {
-          if (Catraca.infoAcesso.leitor == "1") { // Se Funcionário colocar no coletor 1
+          if (Catraca.infoAcesso.leitor == "1") { // Se Supervisor colocar no leitor 1
             socket.write("!OK Supervisor     A000000.......*");
-          } else { // Se Funcionário colocar no coletor 2 = Bloqueia
+          } else { // Se Supervisor colocar no leitor 2 = Bloqueia
             socket.write("!NN Bloqueado      A000000.......*");
           }
         } else {
           if (statusCartao.funcionario === true) { // Funcionário
-            if (Catraca.infoAcesso.leitor == "1") { // Se Funcionário colocar no coletor 1
+            if (Catraca.infoAcesso.leitor == "1") { // Se Funcionário colocar no leitor 1
               Catraca.verificaUltimoAcesso(Catraca.infoAcesso.abaTrack, function(sentidoUltAcesso) {
                 if (sentidoUltAcesso == 'E') { // Último acesso Entrada = Libera Saída
                   socket.write("!OK Ate logo!      S000000.......*");
@@ -79,7 +79,7 @@ var server = net.createServer(function(socket) {
                   socket.write("!OK Bem vindo      A000000.......*");
                 }
               });
-            } else { // Se Funcionário colocar no coletor 2 = Bloqueia
+            } else { // Se Funcionário colocar no leitor 2 = Bloqueia
               socket.write("!NN Bloqueado      A000000.......*");
             }
           } else { // Visitante
