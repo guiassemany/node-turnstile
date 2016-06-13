@@ -91,6 +91,7 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback) {
             statusCartao.bloqueado = null;
             statusCartao.funcionario = null;
             statusCartao.supervisor = null;
+            statusCartao.sentidoUltAcesso = null;
         }
         callback(statusCartao);
     });
