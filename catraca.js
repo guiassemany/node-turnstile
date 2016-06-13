@@ -31,7 +31,7 @@ Catraca.prototype.infoAcesso = {
     foto: null,
 };
 
-Catraca.prototype.montaResposta60 = function(resposta) {
+Catraca.prototype.montaResposta60 = function(resposta, callback) {
     var str = resposta.toString().trim();
     this.infoAcesso.abaTrack = str.substring(1, 15);
     this.infoAcesso.dataAcesso = str.substring(15, 23);
@@ -40,9 +40,10 @@ Catraca.prototype.montaResposta60 = function(resposta) {
     this.infoAcesso.leitor = str.substring(32, 33);
     this.infoAcesso.cartaoSupervisor = str.substring(33, 49);
     this.infoAcesso.dataHora = moment(this.infoAcesso.dataAcesso + ' ' + this.infoAcesso.hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
+    callback(this.infoAcesso);
 }
 
-Catraca.prototype.montaResposta58 = function(resposta) {
+Catraca.prototype.montaResposta58 = function(resposta, callback) {
     var str = resposta.toString().trim();
     this.infoAcesso.abaTrack = "0" + str.substring(0, 13);
     this.infoAcesso.dataAcesso = str.substring(13, 21);
@@ -51,6 +52,7 @@ Catraca.prototype.montaResposta58 = function(resposta) {
     this.infoAcesso.leitor = str.substring(30, 31);
     this.infoAcesso.cartaoSupervisor = str.substring(31, 47);
     this.infoAcesso.dataHora = moment(this.infoAcesso.dataAcesso + ' ' + this.infoAcesso.hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
+    callback(this.infoAcesso);
 }
 
 Catraca.prototype.verificaCartao = function(abaTrack, callback) {
@@ -60,7 +62,7 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback) {
         supervisor: null
     };
     var query = "SELECT situacao, codigoTipoCartao FROM tbl_cartao WHERE abaTrack = ?";
-    q.query(query, abaTrack, function(err, rows, fields) {
+    connection.query(query, abaTrack, function(err, rows, fields) {
         if (!err) {
             if (rows[0].situacao == 'I' || rows[0].situacao == 'E') {
                 statusCartao.bloqueado = true;
@@ -99,12 +101,13 @@ Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
                 callback(false);
             }
         });
+        q.execute();
     });
 }
 
 Catraca.prototype.pegaDonoCartao = function(abaTrack, callback) {
     var query = "SELECT codigoPessoa, nome, foto FROM tbl_pessoa pes INNER JOIN tbl_cartao car ON car.codigoCartao = pes.codigoCartao OR car.codigoCartao = pes.codigoCartaoOficial OR car.codigoCartao = pes.codigoCartaoSupervisor WHERE car.abaTrack = ?";
-    q.query(query, abaTrack, function(err, rows, fields) {
+    connection.query(query, abaTrack, function(err, rows, fields) {
         if (!err) {
             if (typeof rows[0] !== 'undefined') {
                 callback(rows[0].codigoPessoa, rows[0].nome, rows[0].foto);
@@ -120,7 +123,7 @@ Catraca.prototype.pegaDonoCartao = function(abaTrack, callback) {
 
 Catraca.prototype.verificaUltimoAcesso = function(abaTrack, callback) {
     var query = "SELECT sentido FROM tbl_acessocatraca WHERE abaTrack = ? ORDER BY codigoAcessoCatraca DESC LIMIT 1";
-    q.query(query, abaTrack, function(err, rows, fields) {
+    connection.query(query, abaTrack, function(err, rows, fields) {
         if (!err) {
             if (typeof rows[0] !== 'undefined') {
                 callback(rows[0].sentido);
@@ -129,7 +132,7 @@ Catraca.prototype.verificaUltimoAcesso = function(abaTrack, callback) {
             }
         } else {
             console.log(err);
-            console.log('Erro ao consultar código da pessoa.');
+            console.log('Erro ao consultar ultimo sentido.');
         }
     });
 }
