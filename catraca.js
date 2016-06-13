@@ -11,8 +11,7 @@ var connection = mysql.createConnection({
 });
 
 var queues = require('mysql-queues');
-const DEBUG = true;
-queues(connection, DEBUG);
+queues(connection, true);
 var q = connection.createQueue();
 
 // Catraca
