@@ -88,7 +88,11 @@ var server = net.createServer(function(socket) {
                                       socket.write("!OK Bem vindo      E000000.......*");
                                   }
                           } else {
-                              socket.write("!OK Ate logo!      S000000.......*");
+                              if(statusCartao.sentidoUltAcesso == "E"){
+                                  socket.write("!OK Ate logo!      S000000.......*");
+                              }else{
+                                  socket.write("!NN Bloqueado      A000000.......*");
+                              }
                           }
                       }
                       Catraca.limpaInfoAcesso();
