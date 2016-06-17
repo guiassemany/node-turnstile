@@ -5,6 +5,7 @@ var decoder = new StringDecoder('utf8');
 var NetKeepAlive = require('net-keepalive');
 var Catraca = require('./catraca');
 var RealTime = require('./realtime/server');
+//var Cartao = require('./cartao');
 
 var catracasOnline = [];
 
@@ -58,6 +59,7 @@ var server = net.createServer(function(socket) {
             console.log(resposta);
             Catraca.montaResposta60(resposta.replace(/\0/g, ''), function(infoAcesso){
               console.log(Catraca.infoAcesso);
+              //Cartao.relacionaNumero(Catraca.infoAcesso);
               Catraca.verificaCartao(Catraca.infoAcesso.abaTrack, function(statusCartao) {
                   if (statusCartao.bloqueado === true) {
                       socket.write("!NN Bloqueado      A000000.......*");
