@@ -28,17 +28,19 @@ Cartao.prototype.relacionaNumero = function(infoAcesso) {
   });
 };
 
-Cartao.prototype.insereCartao = function(infoAcesso) {
+Cartao.prototype.insereCartao = function(infoAcesso, callback) {
   connection.query("INSERT INTO cap.tbl_cartao (codigoTipoCartao, situacao, abaTrack) VALUES (1, 'I', ?)", infoAcesso.abaTrack, function(err, rows, fields) {
     if(!err) {
       console.log('Cartão cadastrado.');
+      callback(true);
     }
     else {
       console.log(err);
       console.log('Cartão não cadastrado.');
+      callback(true);
     }
   });
-}
+};
 
 
 module.exports = new Cartao();
