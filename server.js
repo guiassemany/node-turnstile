@@ -61,6 +61,7 @@ var server = net.createServer(function(socket) {
               console.log(Catraca.infoAcesso);
               //Cartao.relacionaNumero(Catraca.infoAcesso);
               //Cartao.insereCartao(Catraca.infoAcesso, function(){
+              //Cartao.relacionaCartaoSEM(Catraca.infoAcesso, function(){
               Catraca.verificaCartao(Catraca.infoAcesso.abaTrack, function(statusCartao) {
                   if (statusCartao.bloqueado === true) {
                       socket.write("!NN Bloqueado      A000000.......*");
