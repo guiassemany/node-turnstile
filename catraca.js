@@ -29,6 +29,7 @@ Catraca.prototype.infoAcesso = {
     dataHora: null,
     nome: null,
     foto: null,
+    ip: null,
 };
 
 Catraca.prototype.montaResposta60 = function(resposta, callback) {
@@ -41,7 +42,7 @@ Catraca.prototype.montaResposta60 = function(resposta, callback) {
     this.infoAcesso.cartaoSupervisor = str.substring(33, 49);
     this.infoAcesso.dataHora = moment(this.infoAcesso.dataAcesso + ' ' + this.infoAcesso.hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
     callback(this.infoAcesso);
-}
+};
 
 Catraca.prototype.montaResposta58 = function(resposta, callback) {
     var str = resposta.toString().trim();
@@ -53,7 +54,7 @@ Catraca.prototype.montaResposta58 = function(resposta, callback) {
     this.infoAcesso.cartaoSupervisor = str.substring(31, 47);
     this.infoAcesso.dataHora = moment(this.infoAcesso.dataAcesso + ' ' + this.infoAcesso.hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
     callback(this.infoAcesso);
-}
+};
 
 Catraca.prototype.verificaCartao = function(abaTrack, callback) {
     var statusCartao = {
@@ -95,12 +96,12 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback) {
         }
         callback(statusCartao);
     });
-}
+};
 
 Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
     this.pegaDonoCartao(infoAcesso.abaTrack, function(codigoPessoa, nome, foto) {
         var query = "INSERT INTO tbl_acessocatraca (abaTrack, codigoPessoa, sentido, catraca, dataHora ) VALUES (?, ?, ?, ?, ?)";
-        q.query(query, [infoAcesso.abaTrack, codigoPessoa, infoAcesso.sentido, '4', infoAcesso.dataHora], function(err, rows, fields) {
+        q.query(query, [infoAcesso.abaTrack, codigoPessoa, infoAcesso.sentido, infoAcesso.ip, infoAcesso.dataHora], function(err, rows, fields) {
             if (!err) {
                 console.log('Inserido no BD');
                 callback(true, nome, foto);
@@ -112,7 +113,7 @@ Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
         });
         q.execute();
     });
-}
+};
 
 Catraca.prototype.pegaDonoCartao = function(abaTrack, callback) {
     var query = "SELECT codigoPessoa, nome, foto FROM tbl_pessoa pes INNER JOIN tbl_cartao car ON car.codigoCartao = pes.codigoCartao OR car.codigoCartao = pes.codigoCartaoOficial OR car.codigoCartao = pes.codigoCartaoSupervisor WHERE car.abaTrack = ?";
@@ -128,7 +129,7 @@ Catraca.prototype.pegaDonoCartao = function(abaTrack, callback) {
             console.log('Erro ao consultar código da pessoa.');
         }
     });
-}
+};
 
 Catraca.prototype.verificaUltimoAcesso = function(abaTrack, callback) {
     var query = "SELECT sentido FROM tbl_acessocatraca WHERE abaTrack = ? ORDER BY codigoAcessoCatraca DESC LIMIT 1";
@@ -144,7 +145,7 @@ Catraca.prototype.verificaUltimoAcesso = function(abaTrack, callback) {
             console.log('Erro ao consultar ultimo sentido.');
         }
     });
-}
+};
 
 Catraca.prototype.limpaInfoAcesso = function() {
     this.infoAcesso = {
@@ -158,6 +159,6 @@ Catraca.prototype.limpaInfoAcesso = function() {
         nome: null,
         foto: null,
     };
-}
+};
 
 module.exports = new Catraca();

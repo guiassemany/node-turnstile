@@ -108,6 +108,7 @@ var server = net.createServer(function(socket) {
         } else if (resposta.length == 58) {
             console.log(resposta);
             Catraca.montaResposta58(resposta.replace(/\0/g, ''), function(infoAcesso){
+              Catraca.infoAcesso.ip = socket.remoteAddress;
               Catraca.gravaAcessoCatraca(Catraca.infoAcesso, function(resultado, nome, foto) {
                   Catraca.infoAcesso.nome = nome;
                   Catraca.infoAcesso.foto = foto;
