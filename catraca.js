@@ -10,10 +10,6 @@ var connection = mysql.createConnection({
     database: process.env.DB_DATABASE
 });
 
-var queues = require('mysql-queues');
-queues(connection, true);
-var q = connection.createQueue();
-
 // Catraca
 // ====================
 
@@ -101,7 +97,7 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback) {
 Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
     this.pegaDonoCartao(infoAcesso.abaTrack, function(codigoPessoa, nome, foto) {
         var query = "INSERT INTO tbl_acessocatraca (abaTrack, codigoPessoa, sentido, catraca, dataHora ) VALUES (?, ?, ?, ?, ?)";
-        q.query(query, [infoAcesso.abaTrack, codigoPessoa, infoAcesso.sentido, infoAcesso.ip, infoAcesso.dataHora], function(err, rows, fields) {
+        connection.query(query, [infoAcesso.abaTrack, codigoPessoa, infoAcesso.sentido, infoAcesso.ip, infoAcesso.dataHora], function(err, rows, fields) {
             if (!err) {
                 console.log('Inserido no BD');
                 callback(true, nome, foto);
@@ -111,7 +107,6 @@ Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
                 callback(false);
             }
         });
-        q.execute();
     });
 };
 
