@@ -26,6 +26,7 @@ Catraca.prototype.infoAcesso = {
     nome: null,
     foto: null,
     ip: null,
+    dataValida: null,
 };
 
 Catraca.prototype.montaResposta60 = function(resposta, callback) {
@@ -37,6 +38,7 @@ Catraca.prototype.montaResposta60 = function(resposta, callback) {
     this.infoAcesso.leitor = str.substring(32, 33);
     this.infoAcesso.cartaoSupervisor = str.substring(33, 49);
     this.infoAcesso.dataHora = moment(this.infoAcesso.dataAcesso + ' ' + this.infoAcesso.hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
+    this.infoAcesso.dataValida = moment(this.infoAcesso.dataHora, 'YYYY-MM-DD HH:mm:ss', true).isValid();
     callback(this.infoAcesso);
 };
 
@@ -49,6 +51,7 @@ Catraca.prototype.montaResposta58 = function(resposta, callback) {
     this.infoAcesso.leitor = str.substring(30, 31);
     this.infoAcesso.cartaoSupervisor = str.substring(31, 47);
     this.infoAcesso.dataHora = moment(this.infoAcesso.dataAcesso + ' ' + this.infoAcesso.hora, "DD/MM/YY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
+    this.infoAcesso.dataValida = moment(this.infoAcesso.dataHora, 'YYYY-MM-DD HH:mm:ss', true).isValid();
     callback(this.infoAcesso);
 };
 
@@ -110,6 +113,22 @@ Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
     });
 };
 
+Catraca.prototype.gravaAcessoCatracaSaidaVisitante = function(infoAcesso, callback) {
+    this.pegaDonoCartao(infoAcesso.abaTrack, function(codigoPessoa, nome, foto) {
+        var query = "INSERT INTO tbl_acessocatraca (abaTrack, codigoPessoa, sentido, catraca, dataHora ) VALUES (?, ?, ?, ?, ?)";
+        connection.query(query, [infoAcesso.abaTrack, codigoPessoa, 'S', infoAcesso.ip, infoAcesso.dataHora], function(err, rows, fields) {
+            if (!err) {
+                console.log('Inserido no BD');
+                callback(true, nome, foto);
+            } else {
+                console.log(err);
+                console.log('Erro ao inserir.');
+                callback(false);
+            }
+        });
+    });
+};
+
 Catraca.prototype.pegaDonoCartao = function(abaTrack, callback) {
     var query = "SELECT codigoPessoa, nome, foto FROM tbl_pessoa pes INNER JOIN tbl_cartao car ON car.codigoCartao = pes.codigoCartao OR car.codigoCartao = pes.codigoCartaoOficial OR car.codigoCartao = pes.codigoCartaoSupervisor WHERE car.abaTrack = ?";
     connection.query(query, abaTrack, function(err, rows, fields) {
@@ -153,6 +172,7 @@ Catraca.prototype.limpaInfoAcesso = function() {
         dataHora: null,
         nome: null,
         foto: null,
+        ip: null,
     };
 };
 
