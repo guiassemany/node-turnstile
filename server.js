@@ -134,10 +134,12 @@ var server = net.createServer(function(socket) {
               RealTime.sockets.emit('nova-movimentacao', {
                 infoAcesso: Catraca.infoAcesso
               });
+              Catraca.limpaInfoAcesso();
             });
           }
+        }else{
+            Catraca.limpaInfoAcesso();
         }
-        Catraca.limpaInfoAcesso();
         resposta = "";
       });
     }
