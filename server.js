@@ -104,13 +104,14 @@ var server = net.createServer(function(socket) {
                       RealTime.sockets.emit('nova-movimentacao', {
                         infoAcesso: Catraca.infoAcesso
                       });
+                      Catraca.limpaInfoAcesso();
                     });
                   } else {
                     socket.write("!NN Bloqueado      A000000.......*");
+                    Catraca.limpaInfoAcesso();
                   }
                 }
               }
-              Catraca.limpaInfoAcesso();
             }
           });
         } else { // Problema na leitura do cartão
