@@ -47,7 +47,7 @@ Cartao.prototype.relacionaCartaoSEM = function(infoAcesso, callback) {
     if(!err) {
       connection.query("UPDATE cap.tbl_pessoa SET codigoCartaoOficial = ? WHERE codigoCartaoOficial IS NULL AND codigoUnidadePessoa = 2079 ORDER BY nome ASC LIMIT 1", rows[0].codigoCartao, function(err, rows, fields) {
         if(err) { console.log("UPDATE falhou."); callback(false); }
-        console.log("Cartão relacionado"); 
+        console.log("Cartão relacionado");
         callback(true);
       });
     }
@@ -57,7 +57,23 @@ Cartao.prototype.relacionaCartaoSEM = function(infoAcesso, callback) {
       callback(true);
     }
   });
-}
+};
 
+Cartao.prototype.relacionaCartaoSAA = function(infoAcesso, callback) {
+  connection.query("SELECT codigoCartao FROM cap.tbl_cartao WHERE abaTrack = ?", infoAcesso.abaTrack, function(err, rows, fields) {
+    if(!err) {
+      connection.query("UPDATE cap.tbl_pessoa SET codigoCartaoOficial = ? WHERE foto IS NOT NULL AND codigoTipoPessoa NOT IN(2, 5) AND codigoUnidadePessoa <> 2079 ORDER BY nome ASC LIMIT 1", rows[0].codigoCartao, function(err, rows, fields) {
+        if(err) { console.log("UPDATE falhou."); callback(false); }
+        console.log("Cartão relacionado");
+        callback(true);
+      });
+    }
+    else {
+      console.log(err);
+      console.log('Cartão SAA não relacionado');
+      callback(true);
+    }
+  });
+};
 
 module.exports = new Cartao();

@@ -62,6 +62,7 @@ var server = net.createServer(function(socket) {
         //Cartao.relacionaNumero(Catraca.infoAcesso);
         //Cartao.insereCartao(Catraca.infoAcesso, function(){
         //Cartao.relacionaCartaoSEM(Catraca.infoAcesso, function(){
+        //Cartao.relacionaCartaoSAA(Catraca.infoAcesso, function(){
         console.log('Data valida: ', Catraca.infoAcesso.dataValida);
         if (Catraca.infoAcesso.dataValida === true) {
           Catraca.verificaCartao(Catraca.infoAcesso.abaTrack, function(statusCartao) {
