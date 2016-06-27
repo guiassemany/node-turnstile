@@ -2,7 +2,7 @@ require('dotenv').config();
 var net = require('net');
 var StringDecoder = require('string_decoder').StringDecoder;
 var decoder = new StringDecoder('utf8');
-//var NetKeepAlive = require('net-keepalive');
+var NetKeepAlive = require('net-keepalive');
 var Catraca = require('./catraca');
 var RealTime = require('./realtime/server');
 var Cartao = require('./cartao');
@@ -34,10 +34,10 @@ var server = net.createServer(function(socket) {
   socket.setKeepAlive(habilitar, duracaoInicial); // seta SO_KEEPALIVE e TCP_KEEPIDLE
 
   var intervaloSonda = 1000; // após duracaoInicial envia sondas a cada 1 segundo
-  //NetKeepAlive.setKeepAliveInterval(socket, intervaloSonda); // seta TCP_KEEPINTVL
+  NetKeepAlive.setKeepAliveInterval(socket, intervaloSonda); // seta TCP_KEEPINTVL
 
   var maxSondasAntesDrop = 10; // Depois de 10 tentativas a conexão será dropada
-  //NetKeepAlive.setKeepAliveProbes(socket, maxSondasAntesDrop); // seta TCP_KEEPCNT
+  NetKeepAlive.setKeepAliveProbes(socket, maxSondasAntesDrop); // seta TCP_KEEPCNT
 
   /*
    * Tratamento de Erro do Socket
@@ -138,8 +138,8 @@ var server = net.createServer(function(socket) {
               Catraca.limpaInfoAcesso();
             });
           }
-        }else{
-            Catraca.limpaInfoAcesso();
+        } else {
+          Catraca.limpaInfoAcesso();
         }
         resposta = "";
       });
