@@ -99,8 +99,8 @@ Catraca.prototype.verificaCartao = function(abaTrack, callback) {
 
 Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
     this.pegaDonoCartao(infoAcesso.abaTrack, function(codigoPessoa, nome, foto) {
-        var query = "INSERT INTO tbl_acessocatraca (abaTrack, codigoPessoa, sentido, catraca, dataHora ) VALUES (?, ?, ?, ?, ?)";
-        connection.query(query, [infoAcesso.abaTrack, codigoPessoa, infoAcesso.sentido, infoAcesso.ip, infoAcesso.dataHora], function(err, rows, fields) {
+        var query = "INSERT INTO tbl_acessocatraca (abaTrack, codigoPessoa, sentido, catraca, dataHora ) VALUES (?, ?, ?, ?, NOW())";
+        connection.query(query, [infoAcesso.abaTrack, codigoPessoa, infoAcesso.sentido, infoAcesso.ip], function(err, rows, fields) {
             if (!err) {
                 console.log('Inserido no BD');
                 callback(true, nome, foto);
@@ -115,8 +115,8 @@ Catraca.prototype.gravaAcessoCatraca = function(infoAcesso, callback) {
 
 Catraca.prototype.gravaAcessoCatracaSaidaVisitante = function(infoAcesso, callback) {
     this.pegaDonoCartao(infoAcesso.abaTrack, function(codigoPessoa, nome, foto) {
-        var query = "INSERT INTO tbl_acessocatraca (abaTrack, codigoPessoa, sentido, catraca, dataHora ) VALUES (?, ?, ?, ?, ?)";
-        connection.query(query, [infoAcesso.abaTrack, codigoPessoa, 'S', infoAcesso.ip, infoAcesso.dataHora], function(err, rows, fields) {
+        var query = "INSERT INTO tbl_acessocatraca (abaTrack, codigoPessoa, sentido, catraca, dataHora ) VALUES (?, ?, ?, ?, NOW())";
+        connection.query(query, [infoAcesso.abaTrack, codigoPessoa, 'S', infoAcesso.ip], function(err, rows, fields) {
             if (!err) {
                 console.log('Inserido no BD');
                 callback(true, nome, foto);
