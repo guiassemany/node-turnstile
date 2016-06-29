@@ -27,3 +27,41 @@
 * forever list
 * forever restart server.js
 * forever stop server.js
+
+#### Passo-a-passo desenvolvimento Windows
+* Clonar o projeto `git clone http://ubuntu-srv-gitlab.gsaa.saa.sp.gov.br/gstic/node-turnstile.git`
+* Acessar o diretório do projeto `cd node-turnstile`
+* Remover do package.json a depedência "net-keepalive"
+* Executar o comando `npm install`
+* Readicionar no package.json a dependência "net-keepalive"
+* Se for subir o servidor, comentar as linhas do "Net Keepalive"
+* Para subir o servidor, execute o comando `node server.js`
+* Ao terminar os trabalhos, não esquecer de descomentar o "net keepalive" e dar um push para o servidor
+
+#### Onde comentar o net-keepalive
+```javascript
+require('dotenv').config();
+var net = require('net');
+var StringDecoder = require('string_decoder').StringDecoder;
+var decoder = new StringDecoder('utf8');
+//var NetKeepAlive = require('net-keepalive');
+var Catraca = require('./catraca');
+var RealTime = require('./realtime/server');
+var Cartao = require('./cartao');
+...
+  /*
+   * Configurações do Socket
+   *
+   **/
+  socket.setNoDelay(true);
+  var habilitar = true; // habilita SO_KEEPALIVE
+  var duracaoInicial = 1000; // começa a sondar após 1 segundo de inatividade
+  socket.setKeepAlive(habilitar, duracaoInicial); // seta SO_KEEPALIVE e TCP_KEEPIDLE
+
+  var intervaloSonda = 1000; // após duracaoInicial envia sondas a cada 1 segundo
+  //NetKeepAlive.setKeepAliveInterval(socket, intervaloSonda); // seta TCP_KEEPINTVL
+
+  var maxSondasAntesDrop = 10; // Depois de 10 tentativas a conexão será dropada
+  //NetKeepAlive.setKeepAliveProbes(socket, maxSondasAntesDrop); // seta TCP_KEEPCNT
+
+```
