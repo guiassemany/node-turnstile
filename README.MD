@@ -35,7 +35,11 @@
 * Executar o comando `npm install`
 * Readicionar no package.json a dependência "net-keepalive"
 * Se for subir o servidor, comentar as linhas do "Net Keepalive"
+* Criar o arquivo `.env` a partir do .env.example
+* Editar os parâmetros do arquivo `.env`
 * Para subir o servidor, execute o comando `node server.js`
+* Na interface da catraca, apontar para o IP do novo servidor (Serial Ports -> Port 1-> Ip Address)
+* Após a execução do item acima, clicar em `Reboot` na mesma interface
 * Ao terminar os trabalhos, não esquecer de descomentar o "net keepalive" e dar um push para o servidor
 
 #### Onde comentar o net-keepalive
